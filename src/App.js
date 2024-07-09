@@ -3,6 +3,7 @@ import './App.css';
 import Home from './components/Home';
 import Game from './components/Game';
 import Result from './components/Result';
+import LogViewer from './components/LogViewer';
 
 function App() {
   const [screen, setScreen] = useState('home');
@@ -17,6 +18,7 @@ function App() {
 
   return (
     <div className="App">
+      <LogViewer />
       {screen === 'home' && <Home onStart={startGame} />}
       {screen === 'game' && <Game onGameEnd={endGame} />}
       {screen === 'result' && <Result result={result} onPlayAgain={backToHome} />}

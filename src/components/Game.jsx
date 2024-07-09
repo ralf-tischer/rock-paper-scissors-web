@@ -10,24 +10,23 @@ function Game({ onGameEnd }) {
   const [model, setModel] = useState(null);
 
   useEffect(() => {
-    const loadModel = async () => {
-      await tf.ready();
-      const loadedModel = await handpose.load();
-      setModel(loadedModel);
-    };
-    loadModel();
-
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => {
-        videoRef.current.srcObject = stream;
-      });
+    // Setup logic to initialize video stream and assign it to videoRef.srcObject
+    if (videoRef.current) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+          videoRef.current.srcObject = stream;
+        });
+    }
 
     return () => {
-      const stream = videoRef.current.srcObject;
-      const tracks = stream.getTracks();
-      tracks.forEach(track => track.stop());
+      // Cleanup logic
+      if (videoRef.current && videoRef.current.srcObject) {
+        const tracks = videoRef.current.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+        videoRef.current.srcObject = null;
+      }
     };
-  }, []);
+  }, []); // Adjust dependencies as needed
 
   useEffect(() => {
     if (countdown > 0) {
