@@ -61,6 +61,11 @@ function Game({ onGameEnd }) {
       landmarks[tip][1] < landmarks[tip - 2][1]
     ).length;
 
+    window.addLog(landmarks[thumbTip][0]);
+    window.addLog(landmarks[palmBase][0]);
+    window.addLog(extendedFingers);
+    window.addLog(landmarks[thumbTip][0] > landmarks[palmBase][0]);
+
     const thumbExtended = landmarks[thumbTip][0] > landmarks[palmBase][0];
 
     if (extendedFingers === 0 && !thumbExtended) return 'rock';
