@@ -3,27 +3,37 @@ import * as tf from '@tensorflow/tfjs';
 import * as handpose from '@tensorflow-models/handpose';
 
 function Game({ onGameEnd }) {
-  const [countdown, setCountdown] = useState(3);
+  const [countdown, setCountdown] = useState(5);
   const [userGesture, setUserGesture] = useState(null);
   const [appGesture, setAppGesture] = useState(null);
   const videoRef = useRef(null);
   const [model, setModel] = useState(null);
 
   useEffect(() => {
+    console.log("Initializing video stream...");
     // Setup logic to initialize video stream and assign it to videoRef.srcObject
     if (videoRef.current) {
       navigator.mediaDevices.getUserMedia({ video: true })
         .then(stream => {
+          console.log("Video stream initialized successfully.");
           videoRef.current.srcObject = stream;
+        })
+        .catch(err => {
+          console.error("Error initializing video stream: ", err);
         });
     }
 
     return () => {
+      console.log("Cleaning up video stream...");
       // Cleanup logic
       if (videoRef.current && videoRef.current.srcObject) {
         const tracks = videoRef.current.srcObject.getTracks();
-        tracks.forEach(track => track.stop());
+        tracks.forEach(track => {
+          console.log(`Stopping ${track.kind} track.`);
+          track.stop();
+        });
         videoRef.current.srcObject = null;
+        console.log("Video stream cleaned up successfully.");
       }
     };
   }, []); // Adjust dependencies as needed
@@ -52,7 +62,7 @@ function Game({ onGameEnd }) {
 
   const recognizeGesture = (landmarks) => {
     // Implement gesture recognition logic here
-    // This is a simplified version and may need refinement
+   
     const fingerTips = [8, 12, 16, 20];
     const thumbTip = 4;
     const palmBase = 0;
@@ -60,11 +70,6 @@ function Game({ onGameEnd }) {
     const extendedFingers = fingerTips.filter(tip => 
       landmarks[tip][1] < landmarks[tip - 2][1]
     ).length;
-
-    window.addLog(landmarks[thumbTip][0]);
-    window.addLog(landmarks[palmBase][0]);
-    window.addLog(extendedFingers);
-    window.addLog(landmarks[thumbTip][0] > landmarks[palmBase][0]);
 
     const thumbExtended = landmarks[thumbTip][0] > landmarks[palmBase][0];
 

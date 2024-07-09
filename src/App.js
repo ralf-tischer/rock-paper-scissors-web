@@ -16,6 +16,9 @@ function App() {
   };
   const backToHome = () => setScreen('home');
 
+  console.log('screen:', screen);
+  console.log('result:', result);
+
   return (
     <div className="App">
       <LogViewer />
